@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-// go test -v homework_test.go
+// go test -v endianness_test.go
 
 func ToLittleEndian(number uint32) uint32 {
 	return (number)<<24 | (number&0xFF00)<<8 | (number&0xFF0000)>>8 | (number)>>24
