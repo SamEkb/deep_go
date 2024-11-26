@@ -47,9 +47,9 @@ func (m *OrderedMap) insert(root, nodeToInsert *node) *node {
 	}
 
 	if root.key > nodeToInsert.key {
-		root.right = m.insert(root.right, nodeToInsert)
-	} else {
 		root.left = m.insert(root.left, nodeToInsert)
+	} else {
+		root.right = m.insert(root.right, nodeToInsert)
 	}
 
 	return root
@@ -80,7 +80,6 @@ func (m *OrderedMap) erase(key int, root *node) *node {
 		minNode := m.findMin(root.right)
 		root.key = minNode.key
 		root.value = minNode.value
-
 		root.right = m.erase(minNode.key, root.right)
 	}
 
@@ -107,11 +106,11 @@ func (m *OrderedMap) contains(key int, root *node) bool {
 		return true
 	}
 
-	if root.key > key {
-		return m.contains(key, root.right)
+	if key < root.key {
+		return m.contains(key, root.left)
 	}
 
-	return m.contains(key, root.left)
+	return m.contains(key, root.right)
 }
 
 func (m *OrderedMap) Size() int {
@@ -127,9 +126,9 @@ func (m *OrderedMap) forEach(root *node, action func(int, int)) {
 		return
 	}
 
-	m.forEach(root.right, action)
-	action(root.key, root.value)
 	m.forEach(root.left, action)
+	action(root.key, root.value)
+	m.forEach(root.right, action)
 }
 
 func TestCircularQueue(t *testing.T) {
