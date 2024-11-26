@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// go test -v homework_test.go
+// go test -v ordered_map_test.go
 
 type node struct {
 	key   int
