@@ -22,22 +22,12 @@ type OrderedMap struct {
 }
 
 func NewOrderedMap() OrderedMap {
-	return OrderedMap{
-		root: nil,
-		size: 0,
-	}
+	return OrderedMap{}
 }
 
 func (m *OrderedMap) Insert(key, value int) {
-	if m.root == nil {
-		m.size++
-		m.root = &node{key: key, value: value}
-		return
-	}
-
 	nodeToInsert := &node{key: key, value: value}
-
-	m.insert(m.root, nodeToInsert)
+	m.root = m.insert(m.root, nodeToInsert)
 }
 
 func (m *OrderedMap) insert(root, nodeToInsert *node) *node {
@@ -86,31 +76,31 @@ func (m *OrderedMap) erase(key int, root *node) *node {
 	return root
 }
 
-func (m *OrderedMap) findMin(root *node) *node {
-	for root.left != nil {
-		root = root.left
+func (m *OrderedMap) findMin(curr *node) *node {
+	for curr.left != nil {
+		curr = curr.left
 	}
-	return root
+	return curr
 }
 
 func (m *OrderedMap) Contains(key int) bool {
 	return m.contains(key, m.root)
 }
 
-func (m *OrderedMap) contains(key int, root *node) bool {
-	if root == nil {
+func (m *OrderedMap) contains(key int, curr *node) bool {
+	if curr == nil {
 		return false
 	}
 
-	if root.key == key {
+	if curr.key == key {
 		return true
 	}
 
-	if key < root.key {
-		return m.contains(key, root.left)
+	if key < curr.key {
+		return m.contains(key, curr.left)
 	}
 
-	return m.contains(key, root.right)
+	return m.contains(key, curr.right)
 }
 
 func (m *OrderedMap) Size() int {
