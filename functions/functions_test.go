@@ -41,11 +41,12 @@ func Reduce(data []int, initial int, action func(int, int) int) int {
 		return 0
 	}
 
+	result := initial
 	for _, value := range data {
-		initial = action(value, initial)
+		result = action(value, result)
 	}
 
-	return initial
+	return result
 }
 
 func TestMap(t *testing.T) {
