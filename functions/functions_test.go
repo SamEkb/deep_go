@@ -14,10 +14,9 @@ func Map(data []int, action func(int) int) []int {
 		return data
 	}
 
-	var result []int
-	for _, value := range data {
-		newValue := action(value)
-		result = append(result, newValue)
+	var result = make([]int, len(data))
+	for i, value := range data {
+		result[i] = action(value)
 	}
 	return result
 }
