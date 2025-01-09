@@ -9,6 +9,38 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const (
+	manaOffset = 0
+	manaLength = 10
+
+	healthOffset = 10
+	healthLength = 10
+
+	respectOffset = 20
+	respectLength = 4
+
+	strengthOffset = 24
+	strengthLength = 4
+
+	experienceOffset = 28
+	experienceLength = 4
+
+	levelOffset = 32
+	levelLength = 4
+
+	houseOffset = 36
+	houseLength = 1
+
+	gunOffset = 37
+	gunLength = 1
+
+	familyOffset = 38
+	familyLength = 1
+
+	typeOffset = 39
+	typeLength = 2
+)
+
 type Option func(*GamePerson)
 
 func WithName(name string) func(*GamePerson) {
@@ -33,61 +65,61 @@ func WithGold(gold int) func(*GamePerson) {
 
 func WithMana(mana int) func(*GamePerson) {
 	return func(person *GamePerson) {
-		setBits(person, 0, 10, mana)
+		setBits(person, manaOffset, manaLength, mana)
 	}
 }
 
 func WithHealth(health int) func(*GamePerson) {
 	return func(person *GamePerson) {
-		setBits(person, 10, 10, health)
+		setBits(person, healthOffset, healthLength, health)
 	}
 }
 
 func WithRespect(respect int) func(*GamePerson) {
 	return func(person *GamePerson) {
-		setBits(person, 20, 4, respect)
+		setBits(person, respectOffset, respectLength, respect)
 	}
 }
 
 func WithStrength(strength int) func(*GamePerson) {
 	return func(person *GamePerson) {
-		setBits(person, 24, 4, strength)
+		setBits(person, strengthOffset, strengthLength, strength)
 	}
 }
 
 func WithExperience(experience int) func(*GamePerson) {
 	return func(person *GamePerson) {
-		setBits(person, 28, 4, experience)
+		setBits(person, experienceOffset, experienceLength, experience)
 	}
 }
 
 func WithLevel(level int) func(*GamePerson) {
 	return func(person *GamePerson) {
-		setBits(person, 32, 4, level)
+		setBits(person, levelOffset, levelLength, level)
 	}
 }
 
 func WithHouse() func(*GamePerson) {
 	return func(person *GamePerson) {
-		setBits(person, 36, 1, 1)
+		setBits(person, houseOffset, houseLength, 1)
 	}
 }
 
 func WithGun() func(*GamePerson) {
 	return func(person *GamePerson) {
-		setBits(person, 37, 1, 1)
+		setBits(person, gunOffset, gunLength, 1)
 	}
 }
 
 func WithFamily() func(*GamePerson) {
 	return func(person *GamePerson) {
-		setBits(person, 38, 1, 1)
+		setBits(person, familyOffset, familyLength, 1)
 	}
 }
 
 func WithType(personType int) func(*GamePerson) {
 	return func(person *GamePerson) {
-		setBits(person, 39, 2, personType)
+		setBits(person, typeOffset, typeLength, personType)
 	}
 }
 
@@ -98,8 +130,23 @@ const (
 )
 
 type GamePerson struct {
-	name          [42]byte
-	data          [6]byte
+	//  Строка имени, хранит копию имени пользователя (до 42 символов)
+	name [42]byte
+
+	//  Служебный буфер, куда побитово упакованы поля:
+	//    offset=0..9 для Mana (10 бит)
+	//    offset=10..19 для Health (10 бит)
+	//    offset=20..23 для Respect (4 бита)
+	//    offset=24..27 для Strength (4 бита)
+	//    offset=28..31 для Experience (4 бита)
+	//    offset=32..35 для Level (4 бита)
+	//    offset=36 для House (1 бит)
+	//    offset=37 для Gun (1 бит)
+	//    offset=38 для Family (1 бит)
+	//    offset=39..40 для Type (2 бита)
+	data [6]byte
+
+	// Поля для координат и золота
 	x, y, z, gold int32
 }
 
@@ -157,43 +204,43 @@ func (p *GamePerson) Gold() int {
 }
 
 func (p *GamePerson) Mana() int {
-	return getBits(p, 0, 10)
+	return getBits(p, manaOffset, manaLength)
 }
 
 func (p *GamePerson) Health() int {
-	return getBits(p, 10, 10)
+	return getBits(p, healthOffset, healthLength)
 }
 
 func (p *GamePerson) Respect() int {
-	return getBits(p, 20, 4)
+	return getBits(p, respectOffset, respectLength)
 }
 
 func (p *GamePerson) Strength() int {
-	return getBits(p, 24, 4)
+	return getBits(p, strengthOffset, strengthLength)
 }
 
 func (p *GamePerson) Experience() int {
-	return getBits(p, 28, 4)
+	return getBits(p, experienceOffset, experienceLength)
 }
 
 func (p *GamePerson) Level() int {
-	return getBits(p, 32, 4)
+	return getBits(p, levelOffset, levelLength)
 }
 
 func (p *GamePerson) HasHouse() bool {
-	return getBits(p, 36, 1) == 1
+	return getBits(p, houseOffset, houseLength) == 1
 }
 
 func (p *GamePerson) HasGun() bool {
-	return getBits(p, 37, 1) == 1
+	return getBits(p, gunOffset, gunLength) == 1
 }
 
 func (p *GamePerson) HasFamilty() bool {
-	return getBits(p, 38, 1) == 1
+	return getBits(p, familyOffset, familyLength) == 1
 }
 
 func (p *GamePerson) Type() int {
-	return getBits(p, 39, 2)
+	return getBits(p, typeOffset, typeLength)
 }
 
 func TestGamePerson(t *testing.T) {
